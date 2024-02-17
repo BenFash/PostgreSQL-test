@@ -5,11 +5,11 @@ from sqlalchemy import (
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-# executing the instructions from the "chinook" database
+### executing the instructions from the "chinook" database ###
 db = create_engine("postgresql:///chinook")
 base = declarative_base()
 
-# create a class based model for the "Programmer" table
+### create a class based model for the "Programmer" table ###
 class Programmer(base):
     __tablename__ = "programmer"
     id = Column(Integer, primary_key=True)
@@ -25,11 +25,11 @@ Session = sessionmaker(db)
 # opens an actual session but calling the session() sub-class defined above
 session = Session()
 
-# creating the database using declarative_base sub-class    
+### creating the database using declarative_base sub-class ###    
 base.metadata.create_all(db)
 
 
-# creating records on our programmer table
+### creating records on our programmer table ###
 ada_lovelace = Programmer(
     first_name = "Ada",
     last_name = "Lovelace",
@@ -86,19 +86,61 @@ ben_fashan = Programmer(
     famous_for = "Being cool"
 )
 
-# add each instance of the Programmers to the session
+###  add each instance of the Programmers to the session ### 
 # session.add(ada_lovelace)
 # session.add(alan_turing)
 # session.add(grace_hopper)
 # session.add(margaret_hamilton)
 # session.add(bill_gates)
 # session.add(tim_berners_lee)
-session.add(ben_fashan)
+# session.add(ben_fashan)
 
 # commit the session to the database
-session.commit()
+# session.commit()
 
-# query the database to find all programmers
+
+###  updating a single record ### 
+# programmer = session.query(Programmer).filter_by(id=7).first()
+# programmer.famous_for = "Being really cool"
+
+# # commit the session to the database
+# session.commit()
+
+
+### updating multiple records ### 
+# people = session.query(Programmer)
+# for person in people:
+#     if person.gender == "F":
+#         person.gender = "Female"
+#     elif person.gender == "M":
+#         person.gender = "Male"
+#     else:
+#         print("Gender not defined")
+#     session.commit()
+
+### deleting a single record - using input as user cannot see primary key ###
+# fname = input("Enter first name: ")
+# lname = input("Enter last name: ")
+# programmer = session.query(Programmer).filter_by(first_name=fname, last_name=lname).first()
+## defensive programming
+# if programmer is not None:
+#     print("Programmer found: ", programmer.first_name + " " + programmer.last_name)
+#     confirmation = input("Are you sure you want to delete this record? (y/n) ")
+#     if confirmation.lower() == "y":
+#         session.delete(programmer)
+#         session.commit()
+#         print("Programmer record has been deleted")
+#     else:
+#         print("Programmer record was not deleted")
+# else:
+#     print("No records found")
+
+### deleting multiple records - using input as user cannot see primary key ###
+# programmers = session.query(Programmer)
+# for programmer in programmers:
+#     session.delete(programmer)
+
+###  query the database to find all programmers ### 
 programmers = session.query(Programmer)
 for programmer in programmers:
     print(
